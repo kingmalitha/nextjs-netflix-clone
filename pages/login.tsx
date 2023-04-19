@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import useAuth from "@/hooks/useAuth";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
@@ -11,6 +12,8 @@ interface Inputs {
 
 const Login = () => {
   const [login, setLogin] = useState(false);
+  const { signIn, signUp } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -18,9 +21,9 @@ const Login = () => {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (login) {
-      //await signIn(data.email, data.password)
+      await signIn(data.email, data.password);
     } else {
-      //await signUp(data.email, data.password)
+      await signUp(data.email, data.password);
     }
   };
 
