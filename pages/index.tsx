@@ -1,14 +1,18 @@
-import { Inter } from "next/font/google";
 import Head from "next/head";
 import Header from "../components/Header";
 import Banner from "../components/Banner";
 import Row from "@/components/Row";
 import Modal from "@/components/Modal";
+import Plans from "@/components/Plans";
 import { Movie } from "../typings";
 import requests from "@/utils/requests";
 import useAuth from "@/hooks/useAuth";
 import { useRecoilValue } from "recoil";
 import { modalState } from "@/atoms/modalAtom";
+
+// IMPORT DUMMY PRODUCTS UNTIL WE SET UP STRIPE PRODUCTS
+import { Product, products } from "../constants/products";
+// --------------------------
 
 interface Props {
   netflixOriginals: Movie[];
@@ -19,6 +23,7 @@ interface Props {
   horrorMovies: Movie[];
   romanceMovies: Movie[];
   documentaries: Movie[];
+  products: Product[];
 }
 
 export default function Home({
@@ -30,11 +35,15 @@ export default function Home({
   horrorMovies,
   romanceMovies,
   documentaries,
+  products,
 }: Props) {
   const { loading } = useAuth();
   const showModal = useRecoilValue(modalState);
+  const subscription = false;
 
-  if (loading) return null;
+  if (loading || subscription === null) return null;
+
+  if (!subscription) return <Plans products={products} />;
 
   return (
     <div
@@ -68,6 +77,10 @@ export default function Home({
 }
 
 export const getServerSideProps = async () => {
+  // const products: Product[] = await (
+  //   await fetch("https://example.com/api/products")
+  // ).json();
+
   const [
     netflixOriginals,
     trendingNow,
@@ -98,6 +111,7 @@ export const getServerSideProps = async () => {
       horrorMovies: horrorMovies.results,
       romanceMovies: romanceMovies.results,
       documentaries: documentaries.results,
+      products,
     },
   };
 };
