@@ -8,7 +8,7 @@ import { Movie } from "../typings";
 import requests from "@/utils/requests";
 import useAuth from "@/hooks/useAuth";
 import { useRecoilValue } from "recoil";
-import { modalState } from "@/atoms/modalAtom";
+import { modalState, subscriptionState } from "@/atoms/modalAtom";
 
 // IMPORT DUMMY PRODUCTS UNTIL WE SET UP STRIPE PRODUCTS
 import { Product, products } from "../constants/products";
@@ -39,7 +39,7 @@ export default function Home({
 }: Props) {
   const { loading } = useAuth();
   const showModal = useRecoilValue(modalState);
-  const subscription = false;
+  const subscription = useRecoilValue(subscriptionState);
 
   if (loading || subscription === null) return null;
 
@@ -53,7 +53,10 @@ export default function Home({
     >
       <Head>
         <title>Home - Netflix</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="icon"
+          href="https://res.cloudinary.com/dorssd7la/image/upload/v1681974433/Netflix-Logo-PNG-TITLE_meolqw.png"
+        />
       </Head>
       <Header />
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">

@@ -6,6 +6,9 @@ import useAuth from "@/hooks/useAuth";
 import Table from "./Table";
 import { Product } from "../constants/products";
 import { useState } from "react";
+import Loader from "./Loader";
+import { useRecoilState } from "recoil";
+import { subscriptionState } from "@/atoms/modalAtom";
 
 interface Props {
   products: Product[];
@@ -14,6 +17,20 @@ interface Props {
 const Plans = ({ products }: Props) => {
   const { logout } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<Product | null>(products[2]);
+  const [isBillingLoading, setIsBillingLoading] = useState(false);
+  const [subscription, setSubscription] = useRecoilState(subscriptionState);
+
+  const subscribeToPlan = () => {
+    // 01.) Check Whether user is availble
+
+    setIsBillingLoading(true);
+
+    setTimeout(() => {
+      setIsBillingLoading(false);
+    }, 2000);
+    setSubscription(true);
+  };
+
   return (
     <div>
       <Head>
@@ -38,7 +55,7 @@ const Plans = ({ products }: Props) => {
         </button>
       </header>
 
-      <main className="pt-28 max-w-5xl px-5 pb-12 transition-all md:px-10 ">
+      <main className="pt-28 max-w-5xl mx-auto px-5 pb-12 transition-all md:px-10 ">
         <h1 className="mb-3 text-3xl font-medium ">
           Choose the plan that&apos;s right for you
         </h1>
@@ -75,6 +92,20 @@ const Plans = ({ products }: Props) => {
           </div>
 
           <Table products={products} selectedPlan={selectedPlan} />
+
+          <button
+            disabled={!selectedPlan || isBillingLoading}
+            className={`mx-auto w-11/12 rounded bg-[#E50914] py-4 text-xl shadow hover:bg-[#f6121d] md:w-[420px] ${
+              isBillingLoading && "opacity-60"
+            }`}
+            onClick={subscribeToPlan}
+          >
+            {isBillingLoading ? (
+              <Loader color="dark:fill-gray-300" />
+            ) : (
+              "Subscribe"
+            )}
+          </button>
         </div>
       </main>
     </div>
