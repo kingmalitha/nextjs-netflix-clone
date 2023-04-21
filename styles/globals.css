@@ -50,4 +50,7 @@
   .tableDataFeature {
     @apply w-1/3 p-2.5 text-center md:w-1/5 md:p-3.5;
   }
+  .membershipLink {
+    @apply cursor-pointer text-blue-500 hover:underline;
+  }
 }
