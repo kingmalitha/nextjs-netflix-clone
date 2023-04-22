@@ -2,6 +2,7 @@
 import useAuth from "@/hooks/useAuth";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -13,6 +14,7 @@ interface Inputs {
 const Login = () => {
   const [login, setLogin] = useState(false);
   const { signIn, signUp } = useAuth();
+  const [details, setDetails] = useState(false);
 
   const {
     register,
@@ -25,6 +27,14 @@ const Login = () => {
     } else {
       await signUp(data.email, data.password);
     }
+  };
+
+  const handleDetailsShow = () => {
+    setDetails(true);
+
+    setTimeout(() => {
+      setDetails(false);
+    }, 10000);
   };
 
   return (
@@ -88,6 +98,21 @@ const Login = () => {
           Sign In
         </button>
 
+        <div className="flex justify-between items-center">
+          <label className="text-[gray] text-sm">
+            <input
+              type="checkbox"
+              className="checked:border-gray-500 checked:bg-gray-500"
+            />{" "}
+            Remember me
+          </label>
+          <Link href="/LoginHelp">
+            <button className="text-[gray] text-sm hover:underline text-right">
+              Need help?
+            </button>
+          </Link>
+        </div>
+
         <div className="text-[gray]">
           New to Netflix?{" "}
           <button
@@ -97,6 +122,42 @@ const Login = () => {
           >
             Sign Up Now
           </button>
+        </div>
+
+        <div className="text-xs text-[gray]">
+          <p>
+            This page is protected by Google reCAPTCHA to ensure you&apos;re not
+            a bot.{" "}
+            {!details ? (
+              <button
+                className="text-blue-500 hover:underline"
+                onClick={handleDetailsShow}
+              >
+                Learn more.
+              </button>
+            ) : (
+              <p className="mt-5">
+                The information collected by Google reCAPTCHA is subject to the
+                Google{" "}
+                <a
+                  href="https://policies.google.com/privacy"
+                  className="hover:underline text-blue-500"
+                >
+                  Privacy Policy{" "}
+                </a>
+                and{" "}
+                <a
+                  href="https://policies.google.com/terms"
+                  className="hover:underline text-blue-500"
+                >
+                  Terms of Service
+                </a>
+                , and is used for providing, maintaining, and improving the
+                reCAPTCHA service and for general security purposes (it is not
+                used for personalized advertising by Google).
+              </p>
+            )}
+          </p>
         </div>
       </form>
     </div>
