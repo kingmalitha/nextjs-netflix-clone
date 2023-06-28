@@ -7,7 +7,7 @@
 /* html, body, heading */
 @layer base {
   body {
-    @apply font-[Poppins] bg-[#141414]  text-white !scrollbar-thin !scrollbar-track-transparent !scrollbar-thumb-red-600;
+    @apply font-[Poppins] bg-[#141414]  text-white !scrollbar-thin !scrollbar-track-transparent !scrollbar-thumb-red-600 overflow-x-hidden;
   }
 
   header {
