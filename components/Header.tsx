@@ -4,9 +4,11 @@ import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import BasicMenu from "./BasicMenu";
+import { IoMdArrowDropdown } from "react-icons/io";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
   const { logout } = useAuth();
 
   useEffect(() => {
@@ -24,6 +26,10 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const toggleDropdown = () => {
+    setDropdown(!dropdown);
+  };
 
   return (
     <header className={`${isScrolled && "bg-[#141414]"}`}>
@@ -58,6 +64,24 @@ const Header = () => {
             className='cursor-pointer rounded'
           />
         </Link>
+        <div className='relative'>
+          <button onClick={toggleDropdown}>
+            <IoMdArrowDropdown size={20} />
+          </button>
+
+          {dropdown && (
+            <div className='absolute bg-red-400 top-[40px]  -left-[80px] w-[100px]  z-[6] flex flex-col'>
+              <button className='bg-[#141414] w-full px-6 py-2'>Profile</button>
+
+              <button
+                className='bg-[#141414] w-full px-6 py-2 hover:bg-[#141414]/90'
+                onClick={logout}
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
