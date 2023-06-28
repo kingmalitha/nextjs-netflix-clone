@@ -37,7 +37,7 @@ const Membership = () => {
           onClick={manageSubscription}
         >
           {isBillingLoading ? (
-            <Loader color='text-[#e50914]' />
+            <Loader color='#e50914' />
           ) : (
             <div>{buttonMsg}</div>
           )}
