@@ -8,10 +8,12 @@ import { Movie } from "../typings";
 import requests from "@/utils/requests";
 import useAuth from "@/hooks/useAuth";
 import { useRecoilValue } from "recoil";
-import { modalState, subscriptionState } from "@/atoms/modalAtom";
+import { modalState } from "@/atoms/modalAtom";
 
 // IMPORT DUMMY PRODUCTS UNTIL WE SET UP STRIPE PRODUCTS
-import { Product, products } from "../constants/products";
+import { getProducts, Product } from "@stripe/firestore-stripe-payments";
+import payments from "@/lib/stripe";
+import useSubscription from "@/hooks/useSubscription";
 // --------------------------
 
 interface Props {
@@ -37,9 +39,9 @@ export default function Home({
   documentaries,
   products,
 }: Props) {
-  const { loading } = useAuth();
+  const { loading, user } = useAuth();
   const showModal = useRecoilValue(modalState);
-  const subscription = useRecoilValue(subscriptionState);
+  const subscription = useSubscription(user);
 
   if (loading || subscription === null) return null;
 
@@ -54,24 +56,24 @@ export default function Home({
       <Head>
         <title>Home - Netflix</title>
         <link
-          rel="icon"
-          href="https://res.cloudinary.com/dorssd7la/image/upload/v1681974433/Netflix-Logo-PNG-TITLE_meolqw.png"
+          rel='icon'
+          href='https://res.cloudinary.com/dorssd7la/image/upload/v1681974433/Netflix-Logo-PNG-TITLE_meolqw.png'
         />
       </Head>
       <Header />
-      <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
+      <main className='relative pl-4 pb-24 lg:space-y-24 lg:pl-16'>
         <Banner netflixOriginals={netflixOriginals} />
-        <section className="md:space-y-24">
-          <Row title="Trending Now" movies={trendingNow} />
-          <Row title="Top Rated" movies={topRated} />
-          <Row title="Action Thrillers" movies={actionMovies} />
+        <section className='md:space-y-24'>
+          <Row title='Trending Now' movies={trendingNow} />
+          <Row title='Top Rated' movies={topRated} />
+          <Row title='Action Thrillers' movies={actionMovies} />
 
           {/* My List */}
 
-          <Row title="Comedies" movies={comedyMovies} />
-          <Row title="Scary Movies" movies={horrorMovies} />
-          <Row title="Romance Movies" movies={romanceMovies} />
-          <Row title="Documentaries" movies={documentaries} />
+          <Row title='Comedies' movies={comedyMovies} />
+          <Row title='Scary Movies' movies={horrorMovies} />
+          <Row title='Romance Movies' movies={romanceMovies} />
+          <Row title='Documentaries' movies={documentaries} />
         </section>
       </main>
       {showModal && <Modal />}
@@ -80,9 +82,12 @@ export default function Home({
 }
 
 export const getServerSideProps = async () => {
-  // const products: Product[] = await (
-  //   await fetch("https://example.com/api/products")
-  // ).json();
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error));
 
   const [
     netflixOriginals,
