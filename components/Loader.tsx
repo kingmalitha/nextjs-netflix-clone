@@ -1,4 +1,8 @@
-function Loader({ color }: { color: string }) {
+interface LoaderProps {
+  color?: string;
+}
+
+function Loader({ color }: LoaderProps) {
   if (!color) {
     color = "text-gray-200";
   } else {

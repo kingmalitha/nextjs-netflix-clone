@@ -5,11 +5,12 @@ import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import Table from "./Table";
 import { Product } from "@stripe/firestore-stripe-payments";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Loader from "./Loader";
-import { useRecoilState } from "recoil";
-import { subscriptionState } from "@/atoms/modalAtom";
 import { loadCheckout } from "@/lib/stripe";
+import { toast } from "react-hot-toast";
+import CustomMsgAlert from "./CustomMsgAlert";
+import { is, ms } from "date-fns/locale";
 
 interface Props {
   products: Product[];
@@ -19,7 +20,6 @@ const Plans = ({ products }: Props) => {
   const { logout, user } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<Product | null>(products[2]);
   const [isBillingLoading, setIsBillingLoading] = useState(false);
-  const [subscription, setSubscription] = useRecoilState(subscriptionState);
 
   const subscribeToPlan = () => {
     // 01.) Check Whether user is availble
@@ -31,13 +31,21 @@ const Plans = ({ products }: Props) => {
     // 03.) Create a Checkout Session
     loadCheckout(selectedPlan?.prices[0].id!);
     // - ! : Non-null assertion operator
-
-    // // 04.) Set Subscription to true, state management
-    // setSubscription(true);
-
-    // 05.) Set Billing Loading to false
-    // setIsBillingLoading(false);
   };
+
+  if (isBillingLoading) {
+    toast.custom((t) => <CustomMsgAlert t={t} />, {
+      position: "top-center",
+      duration: 20000,
+    });
+  }
+
+  // useEffect(() => {
+  //   toast.custom((t) => <CustomMsgAlert t={t} />, {
+  //     position: "top-center",
+  //     duration: 20000,
+  //   });
+  // }, [isBillingLoading]);
 
   return (
     <div>
